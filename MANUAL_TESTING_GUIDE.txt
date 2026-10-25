@@ -1,0 +1,430 @@
+# MANUAL TESTING GUIDE - Flask API Assignment
+# How to Test Each Task Manually with curl commands
+
+## ================================================================
+## TASK 1: STUDENT MANAGEMENT SYSTEM (Port 5000)
+## ================================================================
+
+### 1️⃣ GET ALL STUDENTS (Empty database)
+curl http://localhost:5000/students
+
+Expected Output:
+[]
+
+---
+
+### 2️⃣ ADD A STUDENT (POST)
+curl -X POST http://localhost:5000/students \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Ali Khan","department":"Computer Science","email":"ali@example.com"}'
+
+Expected Output:
+{"id": 1, "message": "Student added successfully"}
+
+---
+
+### 3️⃣ ADD MORE STUDENTS
+curl -X POST http://localhost:5000/students \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Fatima Ahmed","department":"Software Engineering","email":"fatima@example.com"}'
+
+curl -X POST http://localhost:5000/students \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Hassan Malik","department":"Data Science","email":"hassan@example.com"}'
+
+---
+
+### 4️⃣ GET ALL STUDENTS (Now with data)
+curl http://localhost:5000/students
+
+Expected Output:
+[
+  {"id": 1, "name": "Ali Khan", "department": "Computer Science", "email": "ali@example.com"},
+  {"id": 2, "name": "Fatima Ahmed", "department": "Software Engineering", "email": "fatima@example.com"},
+  {"id": 3, "name": "Hassan Malik", "department": "Data Science", "email": "hassan@example.com"}
+]
+
+---
+
+### 5️⃣ GET SPECIFIC STUDENT (Student ID = 1)
+curl http://localhost:5000/students/1
+
+Expected Output:
+{"id": 1, "name": "Ali Khan", "department": "Computer Science", "email": "ali@example.com"}
+
+---
+
+### 6️⃣ UPDATE A STUDENT (Change department)
+curl -X PUT http://localhost:5000/students/1 \
+  -H "Content-Type: application/json" \
+  -d '{"department":"Artificial Intelligence"}'
+
+Expected Output:
+{"message": "Student updated successfully"}
+
+---
+
+### 7️⃣ VERIFY UPDATE
+curl http://localhost:5000/students/1
+
+Expected Output (department changed):
+{"id": 1, "name": "Ali Khan", "department": "Artificial Intelligence", "email": "ali@example.com"}
+
+---
+
+### 8️⃣ DELETE A STUDENT
+curl -X DELETE http://localhost:5000/students/1
+
+Expected Output:
+{"message": "Student deleted successfully"}
+
+---
+
+### 9️⃣ VERIFY DELETION
+curl http://localhost:5000/students/1
+
+Expected Output (404 error):
+{"error": "Student not found"}
+
+---
+
+### 🔟 ERROR HANDLING - Add duplicate email
+curl -X POST http://localhost:5000/students \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Test","department":"CS","email":"fatima@example.com"}'
+
+Expected Output (400 error):
+{"error": "Email already exists"}
+
+---
+
+## ================================================================
+## TASK 2: API KEY AUTHENTICATION (Port 5001)
+## ================================================================
+
+⚠️ IMPORTANT: First, you need the API keys!
+
+### 📌 STEP 1: Get the API Keys
+When you ran: cd Task2 && python app.py
+
+You should see in the console:
+============================================================
+API KEYS (for testing):
+============================================================
+Key 1: <RANDOM_KEY_1>
+Key 2: <RANDOM_KEY_2>
+Key 3: <RANDOM_KEY_3>
+============================================================
+
+Copy these keys - you'll need them!
+
+---
+
+### 1️⃣ HEALTH CHECK (No auth needed)
+curl http://localhost:5001/health
+
+Expected Output:
+{"status": "running"}
+
+---
+
+### 2️⃣ PROCESS TEXT WITH VALID API KEY
+Replace YOUR_API_KEY_1 with actual key from console!
+
+curl -X POST http://localhost:5001/process \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: YOUR_API_KEY_1" \
+  -d '{"text":"hello world"}'
+
+Expected Output:
+{"input": "hello world", "output": "HELLO WORLD", "status": "success"}
+
+---
+
+### 3️⃣ PROCESS TEXT WITH DIFFERENT VALID KEY
+curl -X POST http://localhost:5001/process \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: YOUR_API_KEY_2" \
+  -d '{"text":"flask api"}'
+
+Expected Output:
+{"input": "flask api", "output": "FLASK API", "status": "success"}
+
+---
+
+### 4️⃣ PROCESS TEXT WITH INVALID API KEY
+curl -X POST http://localhost:5001/process \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: wrong-key-12345" \
+  -d '{"text":"hello"}'
+
+Expected Output (401 Unauthorized):
+{"error": "Invalid API key", "status": "unauthorized"}
+
+---
+
+### 5️⃣ PROCESS TEXT WITHOUT API KEY
+curl -X POST http://localhost:5001/process \
+  -H "Content-Type: application/json" \
+  -d '{"text":"hello"}'
+
+Expected Output (401 Unauthorized):
+{"error": "API key is missing", "status": "unauthorized"}
+
+---
+
+### 6️⃣ PROCESS TEXT WITH MISSING FIELD
+curl -X POST http://localhost:5001/process \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: YOUR_API_KEY_1" \
+  -d '{"wrong_field":"hello"}'
+
+Expected Output (400 Bad Request):
+{"error": "Missing required field: text", "status": "bad_request"}
+
+---
+
+## ================================================================
+## TASK 3: AUTHENTICATION & AUTHORIZATION (Port 5002)
+## ================================================================
+
+Demo Users:
+- Username: employee
+- Password: password123
+- Username: admin
+- Password: admin123
+
+---
+
+### 1️⃣ LOGIN AS EMPLOYEE
+curl -X POST http://localhost:5002/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"employee","password":"password123"}'
+
+Expected Output:
+{
+  "message": "Login successful",
+  "username": "employee",
+  "role": "Employee",
+  "status": "success"
+}
+
+---
+
+### 2️⃣ LOGIN AS ADMIN
+curl -X POST http://localhost:5002/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123"}'
+
+Expected Output:
+{
+  "message": "Login successful",
+  "username": "admin",
+  "role": "Administrator",
+  "status": "success"
+}
+
+---
+
+### 3️⃣ LOGIN WITH WRONG PASSWORD
+curl -X POST http://localhost:5002/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"employee","password":"wrongpass"}'
+
+Expected Output (401 Unauthorized):
+{"error": "Invalid username or password"}
+
+---
+
+### 4️⃣ EMPLOYEE VIEW EMPLOYEES (Allowed)
+curl -u employee:password123 http://localhost:5002/employees
+
+Expected Output:
+{
+  "employees": [
+    {"id": 1, "name": "John Doe", "position": "Software Engineer"},
+    {"id": 2, "name": "Jane Smith", "position": "Product Manager"},
+    {"id": 3, "name": "Mike Johnson", "position": "Designer"}
+  ],
+  "user": {"username": "employee", "role": "Employee"},
+  "status": "success"
+}
+
+---
+
+### 5️⃣ EMPLOYEE TRY TO ADD EMPLOYEE (NOT Allowed)
+curl -X POST http://localhost:5002/employees \
+  -u employee:password123 \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Test User","position":"Tester"}'
+
+Expected Output (403 Forbidden):
+{"error": "Access denied. Admin role required"}
+
+---
+
+### 6️⃣ EMPLOYEE TRY TO DELETE EMPLOYEE (NOT Allowed)
+curl -X DELETE http://localhost:5002/employees/1 \
+  -u employee:password123
+
+Expected Output (403 Forbidden):
+{"error": "Access denied. Admin role required"}
+
+---
+
+### 7️⃣ ADMIN VIEW EMPLOYEES (Allowed)
+curl -u admin:admin123 http://localhost:5002/employees
+
+Expected Output:
+{
+  "employees": [
+    {"id": 1, "name": "John Doe", "position": "Software Engineer"},
+    {"id": 2, "name": "Jane Smith", "position": "Product Manager"},
+    {"id": 3, "name": "Mike Johnson", "position": "Designer"}
+  ],
+  "user": {"username": "admin", "role": "Administrator"},
+  "status": "success"
+}
+
+---
+
+### 8️⃣ ADMIN ADD EMPLOYEE (Allowed)
+curl -X POST http://localhost:5002/employees \
+  -u admin:admin123 \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Sarah Williams","position":"QA Engineer"}'
+
+Expected Output (201 Created):
+{
+  "id": 4,
+  "message": "Employee added successfully",
+  "user": {"username": "admin", "role": "Administrator"},
+  "status": "success"
+}
+
+---
+
+### 9️⃣ ADMIN UPDATE EMPLOYEE (Allowed)
+curl -X PUT http://localhost:5002/employees/4 \
+  -u admin:admin123 \
+  -H "Content-Type: application/json" \
+  -d '{"position":"Senior QA Engineer"}'
+
+Expected Output (200 OK):
+{
+  "message": "Employee updated successfully",
+  "user": {"username": "admin", "role": "Administrator"},
+  "status": "success"
+}
+
+---
+
+### 🔟 ADMIN DELETE EMPLOYEE (Allowed)
+curl -X DELETE http://localhost:5002/employees/4 \
+  -u admin:admin123
+
+Expected Output (200 OK):
+{
+  "message": "Employee deleted successfully",
+  "user": {"username": "admin", "role": "Administrator"},
+  "status": "success"
+}
+
+---
+
+### 1️⃣1️⃣ TRY WITHOUT CREDENTIALS
+curl http://localhost:5002/employees
+
+Expected Output (401 Unauthorized):
+{"error": "Missing credentials"}
+
+---
+
+### 1️⃣2️⃣ TRY WITH WRONG CREDENTIALS
+curl -u wronguser:wrongpass http://localhost:5002/employees
+
+Expected Output (401 Unauthorized):
+{"error": "Invalid username or password"}
+
+---
+
+## ================================================================
+## SUMMARY: ROLE-BASED ACCESS CONTROL
+## ================================================================
+
+EMPLOYEE (Read-Only Access):
+✅ Can view employees
+❌ Cannot add employees
+❌ Cannot update employees
+❌ Cannot delete employees
+
+ADMINISTRATOR (Full Access):
+✅ Can view employees
+✅ Can add employees
+✅ Can update employees
+✅ Can delete employees
+
+---
+
+## ================================================================
+## TROUBLESHOOTING
+## ================================================================
+
+❌ "Connection refused" or "Failed to connect"?
+→ Make sure all 3 Flask apps are running:
+   Terminal 1: cd Task1 && python app.py
+   Terminal 2: cd Task2 && python app.py
+   Terminal 3: cd Task3 && python app.py
+
+❌ "Module not found" error?
+→ Install dependencies: pip install -r requirements.txt
+
+❌ Port already in use?
+→ Kill the process on that port or use different ports
+
+---
+
+## ================================================================
+## QUICK REFERENCE
+## ================================================================
+
+Task 1 - Student Management: http://localhost:5000
+  GET    /students           → Get all students
+  GET    /students/<id>      → Get one student
+  POST   /students           → Add student
+  PUT    /students/<id>      → Update student
+  DELETE /students/<id>      → Delete student
+
+Task 2 - API Authentication: http://localhost:5001
+  GET    /health             → Health check
+  POST   /process            → Process text (needs X-API-Key header)
+
+Task 3 - Role-Based Auth: http://localhost:5002
+  POST   /login              → Login endpoint
+  GET    /employees          → Get employees (needs auth)
+  POST   /employees          → Add employee (admin only)
+  PUT    /employees/<id>     → Update employee (admin only)
+  DELETE /employees/<id>     → Delete employee (admin only)
+
+---
+
+## ================================================================
+## HOW TO RUN THESE COMMANDS
+## ================================================================
+
+Option 1: Copy-Paste in Terminal/Command Prompt
+- Open your terminal (CMD, PowerShell, or Git Bash)
+- Navigate to your project folder
+- Paste each curl command and press Enter
+
+Option 2: Save as .sh or .bat file
+- Save commands to a file
+- Run the file
+
+Option 3: Use Postman or Insomnia
+- Import the curl commands
+- Click "Send" to test
+
+---
+
+🎉 You now know exactly how to test everything manually!

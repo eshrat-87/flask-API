@@ -1,0 +1,79 @@
+GitHub Repository Setup Instructions
+=====================================
+
+Follow these steps to create your GitHub repository:
+
+Step 1: Create Repository on GitHub
+------------------------------------
+1. Go to https://github.com/new
+2. Repository name: Flask-API-Assignment (or any name you prefer)
+3. Description: "Flask API Assignment with Student Management, API Key Auth, and Role-based Access Control"
+4. Keep it PUBLIC (required for assignment submission)
+5. DO NOT initialize with README, .gitignore, or license (we already have these)
+6. Click "Create repository"
+
+Step 2: Push Your Code
+----------------------
+After creating the repository, GitHub will show you commands.
+Run these commands in your terminal:
+
+cd "C:\Users\Muhammad Ali\Assignment1"
+
+git remote add origin https://github.com/YOUR_USERNAME/Flask-API-Assignment.git
+git push -u origin main
+
+Replace YOUR_USERNAME with your actual GitHub username.
+
+Step 3: Verify Upload
+---------------------
+1. Refresh your GitHub repository page
+2. You should see all your files:
+   - Task1/ folder
+   - Task2/ folder
+   - Task3/ folder
+   - README.md
+   - requirements.txt
+   - Test scripts
+
+Step 4: Copy Repository Link
+-----------------------------
+Once uploaded, copy your repository URL:
+https://github.com/YOUR_USERNAME/Flask-API-Assignment
+
+This is what you'll submit for your assignment.
+
+Alternative: Use GitHub Desktop
+--------------------------------
+If you prefer a GUI:
+1. Download GitHub Desktop: https://desktop.github.com/
+2. Sign in with your GitHub account
+3. File > Add Local Repository
+4. Select: C:\Users\Muhammad Ali\Assignment1
+5. Click "Publish repository"
+6. Make sure "Keep this code private" is UNCHECKED
+7. Click "Publish Repository"
+
+Your Git Configuration
+-----------------------
+Name: Eshrat
+Email: 2412117@lrk.szabist.edu.pk
+Local repository: C:\Users\Muhammad Ali\Assignment1
+Branch: main
+Status: ✓ All files committed
+
+What's Included
+---------------
+✓ Task 1: Student Management System (Flask + SQLite + Streamlit)
+✓ Task 2: API Key Authentication
+✓ Task 3: Authentication & Authorization (Role-based)
+✓ README.md with complete documentation
+✓ requirements.txt
+✓ Test scripts for all three tasks
+✓ .gitignore
+
+Next Steps After Upload
+------------------------
+1. Test each task locally to record demo videos
+2. Add demo.mp4 files to each task folder (or link to videos)
+3. Update README.md if needed
+4. Create submission.txt with your GitHub repository link
