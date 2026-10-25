@@ -200,13 +200,3 @@ curl -X DELETE -u admin:admin123 http://localhost:5002/employees/1
 3. Demo data is populated in Task 3 (employees).
 
 4. All endpoints return proper HTTP status codes and error messages.
-
-## 🎥 Video Demonstration
-Each task folder contains instructions for recording a demo video showing:
-- Add, Update, Delete operations (Task 1)
-- API key validation (Task 2)
-- Role-based access control (Task 3)
-
----
-
-**Ready for submission!** 🚀
